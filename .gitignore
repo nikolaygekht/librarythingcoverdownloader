@@ -1,0 +1,13 @@
+.vs/
+.vscode/
+.nuget/
+.svn/
+.git/
+bin/
+data/
+obj/
+packages/
+*.user
+*.~*
+*.db
+

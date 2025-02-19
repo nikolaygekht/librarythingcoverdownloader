@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# VSSpell001: Spell Check
+dotnet_diagnostic.VSSpell001.severity = none
+
+# S1075: URIs should not be hardcoded
+dotnet_diagnostic.S1075.severity = none

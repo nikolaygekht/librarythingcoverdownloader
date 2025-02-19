@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LibraryThingCoverDownloader": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\develop\\homeapps\\LibraryThingCoverDownloader\\librarything_NikolayGekht.json D:\\develop\\homeapps\\LibraryThingCoverDownloader\\covers"
+    }
+  }
+}
