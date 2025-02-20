@@ -55,13 +55,20 @@
             buttonScanImages = new Button();
             pictureBoxCover = new PictureBox();
             labelImageSize = new Label();
-            buttonDebug1 = new Button();
-            button2 = new Button();
             checkBoxUseLargeImage = new CheckBox();
             labelAllProgress = new Label();
             buttonCancelAll = new Button();
+            label6 = new Label();
+            label7 = new Label();
+            numericTimeout = new NumericUpDown();
+            numericBatch = new NumericUpDown();
+            label8 = new Label();
+            label9 = new Label();
+            buttonLookupPassword = new Button();
             ((System.ComponentModel.ISupportInitialize)webView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCover).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericTimeout).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericBatch).BeginInit();
             SuspendLayout();
             // 
             // textBoxJson
@@ -136,12 +143,12 @@
             // 
             textBoxLibraryThingUser.Location = new Point(248, 466);
             textBoxLibraryThingUser.Name = "textBoxLibraryThingUser";
-            textBoxLibraryThingUser.Size = new Size(349, 35);
+            textBoxLibraryThingUser.Size = new Size(224, 35);
             textBoxLibraryThingUser.TabIndex = 11;
             // 
             // textBoxLibraryThingPassword
             // 
-            textBoxLibraryThingPassword.Location = new Point(828, 466);
+            textBoxLibraryThingPassword.Location = new Point(703, 466);
             textBoxLibraryThingPassword.Name = "textBoxLibraryThingPassword";
             textBoxLibraryThingPassword.PasswordChar = '*';
             textBoxLibraryThingPassword.Size = new Size(349, 35);
@@ -226,7 +233,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(603, 469);
+            label5.Location = new Point(478, 469);
             label5.Name = "label5";
             label5.Size = new Size(219, 30);
             label5.TabIndex = 16;
@@ -234,7 +241,7 @@
             // 
             // buttonLogin
             // 
-            buttonLogin.Location = new Point(1183, 466);
+            buttonLogin.Location = new Point(1229, 464);
             buttonLogin.Name = "buttonLogin";
             buttonLogin.Size = new Size(131, 40);
             buttonLogin.TabIndex = 13;
@@ -247,15 +254,15 @@
             webView.AllowExternalDrop = true;
             webView.CreationProperties = null;
             webView.DefaultBackgroundColor = Color.White;
-            webView.Location = new Point(12, 504);
+            webView.Location = new Point(12, 523);
             webView.Name = "webView";
-            webView.Size = new Size(1494, 499);
+            webView.Size = new Size(1494, 480);
             webView.TabIndex = 15;
             webView.ZoomFactor = 1D;
             // 
             // buttonLoad
             // 
-            buttonLoad.Location = new Point(1320, 466);
+            buttonLoad.Location = new Point(1375, 464);
             buttonLoad.Name = "buttonLoad";
             buttonLoad.Size = new Size(131, 40);
             buttonLoad.TabIndex = 14;
@@ -301,25 +308,6 @@
             labelImageSize.TabIndex = 18;
             labelImageSize.Text = "Size:";
             // 
-            // buttonDebug1
-            // 
-            buttonDebug1.Location = new Point(796, 376);
-            buttonDebug1.Name = "buttonDebug1";
-            buttonDebug1.Size = new Size(131, 40);
-            buttonDebug1.TabIndex = 19;
-            buttonDebug1.Text = "Debug1";
-            buttonDebug1.UseVisualStyleBackColor = true;
-            buttonDebug1.Click += buttonDebug1_Click;
-            // 
-            // button2
-            // 
-            button2.Location = new Point(933, 376);
-            button2.Name = "button2";
-            button2.Size = new Size(131, 40);
-            button2.TabIndex = 20;
-            button2.Text = "Debug2";
-            button2.UseVisualStyleBackColor = true;
-            // 
             // checkBoxUseLargeImage
             // 
             checkBoxUseLargeImage.AutoSize = true;
@@ -350,16 +338,83 @@
             buttonCancelAll.UseVisualStyleBackColor = true;
             buttonCancelAll.Click += buttonCancelAll_Click;
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(828, 381);
+            label6.Name = "label6";
+            label6.Size = new Size(235, 30);
+            label6.TabIndex = 24;
+            label6.Text = "Timeout between pages";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(828, 419);
+            label7.Name = "label7";
+            label7.Size = new Size(229, 30);
+            label7.TabIndex = 25;
+            label7.Text = "Pages in Load All Batch";
+            // 
+            // numericTimeout
+            // 
+            numericTimeout.Location = new Point(1081, 381);
+            numericTimeout.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
+            numericTimeout.Name = "numericTimeout";
+            numericTimeout.Size = new Size(116, 35);
+            numericTimeout.TabIndex = 26;
+            // 
+            // numericBatch
+            // 
+            numericBatch.Location = new Point(1081, 419);
+            numericBatch.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
+            numericBatch.Name = "numericBatch";
+            numericBatch.Size = new Size(116, 35);
+            numericBatch.TabIndex = 27;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(1203, 381);
+            label8.Name = "label8";
+            label8.Size = new Size(40, 30);
+            label8.TabIndex = 28;
+            label8.Text = "ms";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(1203, 419);
+            label9.Name = "label9";
+            label9.Size = new Size(83, 30);
+            label9.TabIndex = 29;
+            label9.Text = "0 for all";
+            // 
+            // buttonLookupPassword
+            // 
+            buttonLookupPassword.Location = new Point(1066, 464);
+            buttonLookupPassword.Name = "buttonLookupPassword";
+            buttonLookupPassword.Size = new Size(131, 40);
+            buttonLookupPassword.TabIndex = 30;
+            buttonLookupPassword.Text = "Lookup";
+            buttonLookupPassword.UseVisualStyleBackColor = true;
+            buttonLookupPassword.Click += buttonLookupPassword_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(2228, 1015);
+            Controls.Add(buttonLookupPassword);
+            Controls.Add(label9);
+            Controls.Add(label8);
+            Controls.Add(numericBatch);
+            Controls.Add(numericTimeout);
+            Controls.Add(label7);
+            Controls.Add(label6);
             Controls.Add(buttonCancelAll);
             Controls.Add(labelAllProgress);
             Controls.Add(checkBoxUseLargeImage);
-            Controls.Add(button2);
-            Controls.Add(buttonDebug1);
             Controls.Add(labelImageSize);
             Controls.Add(pictureBoxCover);
             Controls.Add(buttonScanImages);
@@ -393,6 +448,8 @@
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)webView).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxCover).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericTimeout).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericBatch).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -426,10 +483,15 @@
         private Button buttonScanImages;
         private PictureBox pictureBoxCover;
         private Label labelImageSize;
-        private Button buttonDebug1;
-        private Button button2;
         private CheckBox checkBoxUseLargeImage;
         private Label labelAllProgress;
         private Button buttonCancelAll;
+        private Label label6;
+        private Label label7;
+        private NumericUpDown numericTimeout;
+        private NumericUpDown numericBatch;
+        private Label label8;
+        private Label label9;
+        private Button buttonLookupPassword;
     }
 }

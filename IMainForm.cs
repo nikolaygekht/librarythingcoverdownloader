@@ -7,6 +7,8 @@
         public bool UseLargeImage { get; }
         public string LibraryThingUserName { get; }
         public string LibraryThingPassword { get; }
+        public int BatchTimeout { get; }
+        public int BatchSize { get; }
 
         public object AddBook(string id, string name, string author);
         public void SetImageInfo(object bookObject, string imageInfo);

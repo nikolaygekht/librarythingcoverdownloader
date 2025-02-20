@@ -31,6 +31,8 @@ namespace LibraryThingCoverDownloader
                 textBoxLibraryThingPassword.Text = settings.LibraryThingPassword ?? "";
                 textBoxJson.Text = settings.JsonFileName ?? "";
                 textBoxImageFolder.Text = settings.ImagePath ?? "";
+                numericTimeout.Value = settings.Timeout ?? 3000;
+                numericBatch.Value = settings.BatchSize ?? 0;
 
                 if (settings.Columns != null)
                 {
@@ -53,6 +55,10 @@ namespace LibraryThingCoverDownloader
         public string LibraryThingUserName => textBoxLibraryThingUser.Text;
 
         public string LibraryThingPassword => textBoxLibraryThingPassword.Text;
+
+        public int BatchTimeout => (int)numericTimeout.Value;
+
+        public int BatchSize => (int)numericTimeout.Value;
 
         public object AddBook(string id, string name, string author)
         {
@@ -139,6 +145,8 @@ namespace LibraryThingCoverDownloader
                 JsonFileName = textBoxJson.Text,
                 ImagePath = textBoxImageFolder.Text,
                 Columns = listViewBook.Columns.Cast<ColumnHeader>().Select(c => c.Width).ToArray(),
+                Timeout = (int)numericTimeout.Value,
+                BatchSize = (int)numericBatch.Value,
             };
             settings.Save();
         }
@@ -221,10 +229,6 @@ namespace LibraryThingCoverDownloader
             listViewBook_SelectedIndexChanged(sender, e);
         }
 
-        private async void buttonDebug1_Click(object sender, EventArgs e)
-        {
-        }
-
         private async Task LoadOne(ListViewItem lvi, bool reload = false)
         {
             var id = lvi.Text;
@@ -281,7 +285,8 @@ namespace LibraryThingCoverDownloader
 
         private void buttonLoadAll_Click(object sender, EventArgs e)
         {
-            int max = 0;
+            int max = BatchSize;
+            var timeout = BatchTimeout;
             mCancel = false;
             var lvis = listViewBook.Items.Cast<ListViewItem>().ToList();
             Task.Run(async () =>
@@ -293,9 +298,9 @@ namespace LibraryThingCoverDownloader
                         break;
                     if (lvi.SubItems[3].Text == "y,y")
                         continue;
-                    
+
                     await LoadOneStep(lvi);
-                    Thread.Sleep(3000);
+                    Thread.Sleep(timeout);
                     i++;
                     if (i > max && max > 0)
                         break;
@@ -326,6 +331,11 @@ namespace LibraryThingCoverDownloader
         private void buttonCancelAll_Click(object sender, EventArgs e)
         {
             mCancel = true;
+        }
+
+        private void buttonLookupPassword_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(textBoxLibraryThingPassword.Text, "Password", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

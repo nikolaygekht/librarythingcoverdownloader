@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,16 +13,41 @@ namespace LibraryThingCoverDownloader
         [JsonPropertyName("imagePath")]
         public string? ImagePath { get; set; }
 
+        [JsonInclude]
         [JsonPropertyName("username")]
-        public string? LibraryThingUserName { get; set; }
+        private string? LibraryThingUserNamePrivate { get; set; }
+
+        [JsonIgnore]
+        public string? LibraryThingUserName 
+        { 
+            get
+            {
+                return LibraryThingUserNamePrivate;
+            }
+            set
+            {
+                var password = (string)null;
+                if (LibraryThingPasswordEncoded != null)
+                    password = LibraryThingPassword;
+                LibraryThingUserNamePrivate = value;
+                LibraryThingPassword = password;
+            }
+        }
 
         [JsonPropertyName("columns")]
         public int[]? Columns { get; set; }
 
+        [JsonPropertyName("timeout")]
+        public int? Timeout { get; set; }
+
+        [JsonPropertyName("batchsize")]
+        public int? BatchSize { get; set; }
+
         [JsonInclude]
         [JsonPropertyName("password")]
-        public string? LibraryThingPasswordEncoded { get; private set; }
+        private string? LibraryThingPasswordEncoded { get; set; }
 
+        [JsonIgnore]
         public string? LibraryThingPassword 
         { 
             get
@@ -30,10 +56,7 @@ namespace LibraryThingCoverDownloader
                 {
                     return string.Empty;
                 }
-
-                var bytes = Convert.FromBase64String(LibraryThingPasswordEncoded);
-                Decrypt(bytes);
-                return Encoding.UTF8.GetString(bytes);
+                return Decrypt(LibraryThingPasswordEncoded, LibraryThingUserName ?? "");
             }
             set
             {
@@ -41,28 +64,71 @@ namespace LibraryThingCoverDownloader
                 {
                     LibraryThingPasswordEncoded = "";
                     return;
+                }               
+                LibraryThingPasswordEncoded = Encrypt(value, LibraryThingUserName ?? "");
+            }
+        }
+
+        private static void InitializeAes(Aes? aes, string username)
+        {
+            if (aes == null)
+                return;
+            using SHA256 sha256 = SHA256.Create();
+            aes.Key = sha256.ComputeHash(Encoding.UTF8.GetBytes("librarything:" + username)).AsSpan().Slice(0, 32).ToArray();
+            aes.IV = sha256.ComputeHash(Encoding.UTF8.GetBytes("imagedownloader:" + username)).AsSpan().Slice(0, 16).ToArray();
+        }
+
+        private static string Encrypt(string password, string username)
+        {
+            using var aes = Aes.Create();
+            InitializeAes(aes, username);
+            using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+           
+            using (var msEncrypt = new MemoryStream())
+            {
+                using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    using (var swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        //Write all data to the stream.
+                        swEncrypt.Write(username + "," + password);
+                    }
+                    csEncrypt.Flush();
                 }
-
-                var bytes = Encoding.UTF8.GetBytes(value);
-                Encrypt(bytes);
-                LibraryThingPasswordEncoded = Convert.ToBase64String(bytes);
+                return Convert.ToBase64String(msEncrypt.ToArray());
             }
+            
         }
 
-        private static void Encrypt(byte[] bytes)
+        private static string Decrypt(string password, string username)
         {
-            for (int i = 0; i < bytes.Length; i++)
+            using var aes = Aes.Create();
+            using SHA256 sha256 = SHA256.Create();
+            InitializeAes(aes, username);
+            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            var bytes = Convert.FromBase64String(password);
+            string s = "";
+            using (MemoryStream msDecrypt = new MemoryStream(bytes))
             {
-                bytes[i] ^= 0x5A;
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                {
+                    using (var sr = new StreamReader(csDecrypt))
+                    {
+                        try
+                        {
+                            s = sr.ReadToEnd();
+                        }
+                        catch (Exception)
+                        {
+                            return null;
+                        }
+                    }
+                }
             }
-        }
 
-        private static void Decrypt(byte[] bytes)
-        {
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] ^= 0x5A;
-            }
+            if (!s.StartsWith(username + ","))
+                return null;
+            return s.Substring(username.Length + 1);
         }
 
         public static Settings? Load()
